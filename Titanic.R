@@ -85,6 +85,3 @@ cv.err.LOOCV <- cv.glm(data, glm.fit);
 print(paste("The prediction error using LOOCV is ", cv.err.LOOCV$delta[1]));
 cv.err.K10 <- cv.glm(data, glm.fit, K=10);
 print(paste("The prediction error using K-fold cv is ", cv.err.K10$delta[1]));
-
-
-# Run LOOC cross validation
