@@ -17,4 +17,5 @@ The results are shown as follows:
 ```
 
 Here is the ROC curve:
+
 ![alt tag](https://github.com/GeneralBunny/Titanic/blob/master/ROC.jpeg)
