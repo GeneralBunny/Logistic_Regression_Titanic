@@ -26,9 +26,11 @@ contrasts(data$Embarked);
 data <- data[!is.na(data$Embarked),];
 rownames(data) <- NULL;
 
-# Manually split the data for validation.
-train <- data[1:600,];
-test <- data[600:889,];
+# Randomly pick 450 data as the training data. The rest is the test data.
+set.seed(55)
+trainNum <- sample(1:nrow(data), 450);
+train <- data[trainNum,];
+test <- data[setdiff(rownames(data), rownames(train)),];
 
 # Perform logistic regression
 model <- glm(Survived~., family=binomial(link="logit"),data=train);
@@ -52,10 +54,10 @@ anova(model, test = "Chisq");
 fitted.results <- predict(model,newdata=subset(test,select=c(2,3,4,5,6,7,8)),type='response');
 fitted.results <- ifelse(fitted.results > 0.5,1,0);
 # MSE of the fit.
-print(paste("The MSE of glm (manually separated traing and test) is ",
-                 mean(fitted.results-as.numeric(test$Sex)^2)));
+print(paste("The MSE of glm (randomly pick 450 data for training and the rest for test) is ",
+                 mean((fitted.results-as.numeric(test$Survived))^2)));
 misClasificError <- mean(fitted.results != test$Survived);
-print(paste('Accuracy',1-misClasificError));
+print(paste('The accuracy of the logistic regression is',1-misClasificError));
 
 # Plot the ROC curve
 p <- predict(model, newdata=subset(test, select=c(2,3,4,5,6,7,8)), type = "response");
@@ -75,7 +77,8 @@ plot(prf);
 # http://stats.stackexchange.com/questions/105501/understanding-roc-curve
 # You can use AUC to select the threshold: the one with the smallest fpr and largest tpr.
 auc<- performance(pr, measure = "auc");
-auc@y.values[[1]];
+print(paste("The area underneath the ROC curve (AUC) is ", auc@y.values[[1]]));
+# auc@y.values[[1]];
 
 
 # Run LOOCV cross validation 
